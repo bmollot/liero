@@ -19,7 +19,7 @@ struct Common;
 
 struct Level
 {
-//protected:
+protected:
 	Level(Common& common)
 	: width(0)
 	, height(0)
@@ -27,40 +27,6 @@ struct Level
 		zeroMaterial = common.materials[0];
 	}
 public:
-	Level(Common& common, Settings const& settings, gvl::octet_reader r)
-	: Level(common)
-	{
-		resize(504, 350);
-
-		//std::size_t len = f.len;
-		bool resetPalette = true;
-
-		r.get(reinterpret_cast<uint8_t*>(&data[0]), width * height);
-
-		if (/*len >= 504*350 + 10 + 256*3
-			&&*/ (settings.extensions && settings.loadPowerlevelPalette))
-		{
-			uint8_t buf[10];
-			if (r.try_get(buf, 10))
-			{
-				if (!std::memcmp("POWERLEVEL", buf, 10))
-				{
-					Palette pal;
-					pal.read(r);
-					origpal.resetPalette(pal, settings);
-
-					resetPalette = false;
-				}
-			}
-		}
-
-		for (std::size_t i = 0; i < data.size(); ++i)
-			materials[i] = common.materials[data[i]];
-
-		if (resetPalette)
-			origpal.resetPalette(common.exepal, settings);
-	}
-
 	static Level *createFromFile(Common& common, Settings const& settings, std::string const& path);
 	static Level *generateFromSettings(Common& common, Settings const& settings, Rand& rand);
 
@@ -69,65 +35,35 @@ public:
 	void makeShadow(Common& common);
 	bool selectSpawn(Rand& rand, int w, int h, gvl::ivec2& selected);
 	void drawMiniature(Bitmap& dest, int mapX, int mapY, int step);
+
+	virtual void resetPalette(Common &common, Settings const &settings) = 0;
 		
-	unsigned char pixel(int x, int y)
-	{
-		return data[x + y*width];
-	}
+	virtual unsigned char pixel(int x, int y) = 0;
 
-	unsigned char pixel(fixedvec pos)
-	{
-		return data[pos.x + pos.y*width];
-	}
+	virtual unsigned char pixel(fixedvec pos) = 0;
 
-	unsigned char* pixelp(int x, int y)
-	{
-		return &data[x + y*width];
-	}
+	virtual unsigned char* pixelp(int x, int y) = 0;
 
-	void setPixel(int x, int y, PalIdx w, Common& common)
-	{
-		data[x + y*width] = w;
-		materials[x + y*width] = common.materials[w];
-	}
+	virtual void setPixel(int x, int y, PalIdx w, Common& common) = 0;
 
-	void setPixel(fixedvec pos, PalIdx w, Common& common)
-	{
-		data[pos.x + pos.y*width] = w;
-		materials[pos.x + pos.y*width] = common.materials[w];
-	}
+	virtual void setPixel(fixedvec pos, PalIdx w, Common& common) = 0;
 
-	Material& mat(int x, int y)
-	{
-		return materials[x + y*width];
-	}
+	virtual Material& mat(int x, int y) = 0;
 
-	Material& mat(fixedvec pos)
-	{
-		return materials[pos.x + pos.y*width];
-	}
+	virtual Material& mat(fixedvec pos) = 0;
 
-	Material* matp(int x, int y)
-	{
-		return &materials[x + y*width];
-	}
+	virtual Material* matp(int x, int y) = 0;
 	
-	unsigned char checkedPixelWrap(int x, int y)
-	{
-		unsigned int idx = static_cast<unsigned int>(x + y*width);
-		if(idx < data.size())
-			return data[idx];
-		return 0;
-	}
+	virtual unsigned char checkedPixelWrap(int x, int y) = 0;
 
-	Material checkedMatWrap(int x, int y)
-	{
-		unsigned int idx = static_cast<unsigned int>(x + y*width);
-		if(idx < materials.size())
-			return materials[idx];
-		return zeroMaterial;
-	}
-	
+	virtual Material checkedMatWrap(int x, int y) = 0;
+
+	virtual void resize(int width_new, int height_new) = 0;
+
+	virtual PalIdx &palette() = 0;
+
+	virtual Palette originalPalette() = 0;
+
 	bool inside(int x, int y)
 	{
 		return static_cast<unsigned int>(x) < static_cast<unsigned int>(width)
@@ -145,16 +81,10 @@ public:
 		return gvl::rect(0, 0, width, height);
 	}
 	
-	void resize(int width_new, int height_new);
-	
-	std::vector<unsigned char> data;
-	std::vector<Material> materials;
-	
+	Material zeroMaterial;
+	int width, height;
 	bool oldRandomLevel;
 	std::string oldLevelFile;
-	int width, height;
-	Palette origpal;
-	Material zeroMaterial;
 };
 
 #endif // LIERO_LEVEL_HPP

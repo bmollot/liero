@@ -117,6 +117,7 @@
     </ClCompile>
     <ClCompile Include="..\src\game\spectatorviewport.cpp" />
     <ClCompile Include="..\src\game\levelpng.cpp" />
+    <ClCompile Include="..\src\game\levellev.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\game\gfx\blit.hpp">
@@ -286,7 +287,6 @@
     <ClInclude Include="..\src\game\fastObjectList.hpp" />
     <ClInclude Include="..\src\game\filesystem.hpp" />
     <ClInclude Include="..\src\game\game.hpp" />
-    <ClInclude Include="..\src\game\gvl\zlib\zlib2.h" />
     <ClInclude Include="..\src\game\level.hpp" />
     <ClInclude Include="..\src\game\math.hpp" />
     <ClInclude Include="..\src\game\mixer\mixer.h" />
@@ -302,6 +302,7 @@
     <ClInclude Include="..\src\game\weapon.hpp" />
     <ClInclude Include="..\src\game\worm.hpp" />
     <ClInclude Include="..\src\game\levelpng.hpp" />
+    <ClInclude Include="..\src\game\levellev.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

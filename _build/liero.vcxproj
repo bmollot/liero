@@ -223,6 +223,7 @@
     <ClCompile Include="..\src\game\gfx\palette.cpp" />
     <ClCompile Include="..\src\game\gfx\renderer.cpp" />
     <ClCompile Include="..\src\game\gfx\sprite.cpp" />
+    <ClCompile Include="..\src\game\levellev.cpp" />
     <ClCompile Include="..\src\game\levelpng.cpp" />
     <ClCompile Include="..\src\gvl\containers\list.cpp" />
     <ClCompile Include="..\src\gvl\io2\convert.cpp" />
@@ -271,6 +272,7 @@
     <ClInclude Include="..\src\game\gfx\palette.hpp" />
     <ClInclude Include="..\src\game\gfx\renderer.hpp" />
     <ClInclude Include="..\src\game\gfx\sprite.hpp" />
+    <ClInclude Include="..\src\game\levellev.hpp" />
     <ClInclude Include="..\src\game\levelpng.hpp" />
     <ClInclude Include="..\src\gvl\containers\bucket.hpp" />
     <ClInclude Include="..\src\gvl\containers\list.h" />
@@ -317,7 +319,6 @@
     <ClInclude Include="..\src\game\fastObjectList.hpp" />
     <ClInclude Include="..\src\game\filesystem.hpp" />
     <ClInclude Include="..\src\game\game.hpp" />
-    <ClInclude Include="..\src\game\gvl\zlib\zlib2.h" />
     <ClInclude Include="..\src\game\level.hpp" />
     <ClInclude Include="..\src\game\material.hpp" />
     <ClInclude Include="..\src\game\math.hpp" />

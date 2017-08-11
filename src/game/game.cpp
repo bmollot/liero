@@ -521,7 +521,7 @@ void Game::focus(Renderer& renderer)
 
 void Game::updateSettings(Renderer& renderer)
 {
-	renderer.origpal = level->origpal; // Activate the Level palette
+	renderer.origpal = level->originalPalette(); // Activate the Level palette
 	
 	for(std::size_t i = 0; i < worms.size(); ++i)
 	{

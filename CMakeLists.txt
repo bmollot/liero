@@ -26,6 +26,7 @@ set(SOURCES
     src/game/filesystem.cpp
     src/game/game.cpp
     src/game/level.cpp
+    src/game/levellev.cpp
     src/game/levelpng.cpp
     src/game/math.cpp
     src/game/ninjarope.cpp

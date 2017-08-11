@@ -42,7 +42,7 @@ void SpectatorViewport::draw(Game& game, Renderer& renderer, GameState state, bo
 	for (std::size_t i = 0; i < game.worms.size(); ++i)
 	{
 		Worm const& worm = *game.worms[i];
-		int offsetX = offs.x / (i + 1);
+		int offsetX = static_cast<int>(offs.x / (i + 1));
 		// fix misalignment. Not sure why this is needed
 		if (i == 1)
 		{
@@ -179,7 +179,7 @@ void SpectatorViewport::draw(Game& game, Renderer& renderer, GameState state, bo
 		}
 	}
 
-	blitImageNoKeyColour(renderer.bmp, &game.level->data[0], offs.x, offs.y, game.level->width, game.level->height);
+	blitImageNoKeyColour(renderer.bmp, &game.level->palette(), offs.x, offs.y, game.level->width, game.level->height);
 
 	if (game.settings->gameMode == Settings::GMHoldazone)
 	{

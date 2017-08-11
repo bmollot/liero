@@ -39,10 +39,10 @@ struct LevelPng : Level
 		}
 		for (std::size_t i = 0; i < width * height; i++)
 		{
-			data[i] = pngdata[i];
-			materials[i] = common.materials[pngdata[i]];
+			//data[i] = pngdata[i];
+			//materials[i] = common.materials[pngdata[i]];
 		}
-		origpal.resetPalette(common.exepal, settings);
+		//origpal.resetPalette(common.exepal, settings);
 	}
 };
 

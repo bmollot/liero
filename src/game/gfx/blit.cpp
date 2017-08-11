@@ -311,7 +311,7 @@ void blitImageOnMap(Common& common, Level& level, PalIdx* mem, int x, int y, int
 	
 	CLIP_IMAGE(clipRect);
 	
-	BLITL(&level.data[0], level.width, &level.materials[0],
+	BLITL(&level.palette(), level.width, &level.mat(0,0),
 	{
 		if(c)
 		{
@@ -444,7 +444,7 @@ void drawDirtEffect(Common& common, Rand& rand, Level& level, int dirtEffect, in
 	
 	if(tex.nDrawBack)
 	{
-		BLITL(&level.data[0], level.width, &level.materials[0],
+		BLITL(&level.palette(), level.width, &level.mat(0, 0),
 		{
 			switch(c)
 			{
@@ -476,7 +476,7 @@ void drawDirtEffect(Common& common, Rand& rand, Level& level, int dirtEffect, in
 	}
 	else
 	{
-		BLITL(&level.data[0], level.width, &level.materials[0],
+		BLITL(&level.palette(), level.width, &level.mat(0, 0),
 		{
 			switch(c)
 			{

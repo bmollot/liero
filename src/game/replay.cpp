@@ -3,6 +3,8 @@
 #include "game.hpp"
 #include "worm.hpp"
 #include "viewport.hpp"
+#include "level.hpp"
+#include "levellev.hpp"
 #include <gvl/support/type_info.hpp>
 #include <gvl/serialization/archive.hpp>
 #include <gvl/io2/deflate_filter.hpp>
@@ -228,8 +230,9 @@ void archive(in_archive_t ar, Level **level)
 	unsigned int h = gvl::read_uint16(ar.reader);
 	Common& common = *ar.context.game->common;
 
-	*level = new Level(common);
-	Level *level_ptr = *level;
+	// FIXME could be LevelPng
+	*level = new LevelLev(common);
+	LevelLev *level_ptr = (LevelLev*)*level;
 	level_ptr->resize(w, h);
 	
 	if(ar.context.replayVersion > 1)
@@ -257,17 +260,18 @@ void archive(gvl::out_archive<Writer, GameSerializationContext> ar, Level **leve
 	ar.ui16(level_ptr->height);
 	unsigned int w = level_ptr->width;
 	unsigned int h = level_ptr->height;
+	Palette origpal = level_ptr->originalPalette();
 	
 	if(ar.context.replayVersion > 1)
-		archive(ar, level_ptr->origpal);
+		archive(ar, origpal);
 	
-	ar.writer.put(&level_ptr->data[0], w * h);
+	ar.writer.put(&level_ptr->palette(), w * h);
 	
 	for(unsigned int i = 0; i < 256; ++i)
 	{
-		ar.writer.put(level_ptr->origpal.entries[i].r);
-		ar.writer.put(level_ptr->origpal.entries[i].g);
-		ar.writer.put(level_ptr->origpal.entries[i].b);
+		ar.writer.put(origpal.entries[i].r);
+		ar.writer.put(origpal.entries[i].g);
+		ar.writer.put(origpal.entries[i].b);
 	}
 }
 
