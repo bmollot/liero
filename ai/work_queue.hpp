@@ -123,7 +123,15 @@ struct WorkQueue
 			SDL_CondWait(queueCond, queueMutex);
 
 		if (!queueAlive)
+		{
+			#ifdef NO_EXCEPTIONS
+			// Return an empty pointer if we can't throw.
+			std::unique_ptr<Work> ret;
+			return ret;
+			#else
 			throw StopWorker();
+			#endif
+		}
 
 		auto ret = std::move(queue[0]);
 		queue.erase(queue.begin());
@@ -139,7 +147,12 @@ struct WorkQueue
 			while (true)
 			{
 				auto work = queue->waitForWork();
-
+				#ifdef NO_EXCEPTIONS
+				// Break from while explicitly rather than
+				// depending on a throw in waitForWork().
+				if (!work)
+					break;
+				#endif
 				work->run();
 			}
 		}

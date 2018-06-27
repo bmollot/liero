@@ -443,12 +443,26 @@ uint32_t const replayMagic = ('L' << 24) | ('R' << 16) | ('P' << 8) | 'F';
 std::unique_ptr<Game> ReplayReader::beginPlayback(gvl::shared_ptr<Common> common, gvl::shared_ptr<SoundPlayer> soundPlayer)
 {
 	uint32_t readMagic = gvl::read_uint32(reader);
+	#ifdef NO_EXCEPTIONS
+	std::unique_ptr<Game> ret;
+	if(readMagic != replayMagic)
+	{
+		printf("REPLAY ERROR: File does not appear to be a replay\n");
+		return ret;
+	}
+	context.replayVersion = reader.get();
+	if(context.replayVersion > myReplayVersion)
+	{
+		printf("REPLAY ERROR: Replay version is too recent\n");
+		return ret;
+	}
+	#else
 	if(readMagic != replayMagic)
 		throw gvl::archive_check_error("File does not appear to be a replay");
 	context.replayVersion = reader.get();
 	if(context.replayVersion > myReplayVersion)
 		throw gvl::archive_check_error("Replay version is too recent");
-	
+	#endif
 	gvl::shared_ptr<Settings> settings(new Settings);
 
 	std::unique_ptr<Game> game(new Game(common, settings, soundPlayer));
@@ -574,7 +588,16 @@ bool ReplayReader::playbackFrame(Renderer& renderer)
 			break; // Read frame
 		}
 		else
+		{
+			#ifdef NO_EXCEPTIONS
+			// Treat invalid first byte like an "end of replay" if we can't throw
+			printf("ARCHIVE CHECK ERROR: Unexpected header byte\tTreating as end of replay.\n");
+			return false;
+			#else
+			// Otherwise throw for proper handling
 			throw gvl::archive_check_error("Unexpected header byte");
+			#endif
+		}
 	}
 	
 	if(settingsChanged)
@@ -586,7 +609,7 @@ bool ReplayReader::playbackFrame(Renderer& renderer)
 	{
 		uint32_t expected = gvl::read_uint32(reader);
 		uint32_t actual = fastGameChecksum(game);
-#if !ENABLE_TRACING
+#if !ENABLE_TRACING && !defined(NO_EXCEPTIONS)
 		if(actual != expected)
 			throw gvl::archive_check_error("Replay has desynced");
 #endif

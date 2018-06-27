@@ -218,6 +218,17 @@ void Level::resize(int width_new, int height_new)
 
 bool Level::load(Common& common, Settings const& settings, gvl::octet_reader r)
 {
+	#ifdef NO_EXCEPTIONS
+	// Fail to load if reader is empty.
+	// If the read isn't empty, but points to a malformed level, then Switch will
+	// panic. Oh well.
+	// NOTE: It's strange that this function returns bool, given that it usually
+	//   either returns true or throws. Perhaps a relic of an old implementation?
+	//	 Luckily the calling function deals with a false return properly by generating
+	//   a random level.
+	if (r.empty())
+		return false;
+	#endif
 	resize(504, 350);
 
 	//std::size_t len = f.len;

@@ -49,14 +49,15 @@ APP_ICON		:= $(DEVKITPRO)/libnx/default_icon.jpg
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
+DEFINES += -DSWITCH -D__AARCH64__ -DNO_EXCEPTIONS # -DLOG_FILE="debug.txt"
 INCLUDE += -I$(TOPDIR)/libavcodec
 
 ARCH	:=	-march=armv8-a -mtune=cortex-a57 -mtp=soft -fPIE
 
-CFLAGS	:= -g -Wall -O2 -ffunction-sections \
+CFLAGS	:= -g -Wall -O3 -ffunction-sections \
 			$(ARCH) $(DEFINES)
 
-CFLAGS	+=	$(INCLUDE) -DSWITCH -D__AARCH64__
+CFLAGS	+=	$(INCLUDE)
 
 # CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
 CXXFLAGS	:= $(CFLAGS) -std=gnu++11

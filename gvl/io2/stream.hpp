@@ -253,7 +253,15 @@ struct octet_reader
 
 			auto status = next_piece_(uint32_t(len));
 			if (status != source_result::ok)
+			{
+				#ifdef NO_EXCEPTIONS
+				// Just ignore get() errors
+				printf("STREAM ERROR: Read error in get()\n");
+				return;
+				#else
 				throw runtime_error("Read error in get()");
+				#endif
+			}
 		}
 	}
 

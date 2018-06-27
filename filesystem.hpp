@@ -140,8 +140,14 @@ struct FsNode
 	gvl::source toSource() const
 	{
 		auto s = imp->tryToSource();
-		if (!s)
+		if (!s) {
+			#ifdef NO_EXCEPTIONS
+			printf("TOSOURCE ERROR: Could not read %s\n", fullPath().c_str());
+			return s;
+			#else
 			throw std::runtime_error("Could not read " + fullPath());
+			#endif
+		}
 		return std::move(s);
 	}
 
