@@ -19,6 +19,10 @@ extern "C"
 #include "mixer/mixer.h"
 }
 
+#ifdef SWITCH
+std::string configRoot = "/liero";
+#endif
+
 void replayToVideo(
 	gvl::shared_ptr<Common> const& common,
 	std::string const& fullPath,

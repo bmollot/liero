@@ -12,3 +12,19 @@ cmake_install.cmake
 # created by running Liero
 Replays/
 Profiles/
+
+# Editor refuse
+.vscode/
+
+# Nintendo Switch build specific
+nx-build/
+liero-tool.elf
+liero-tool.nacp
+liero-tool.nro
+liero-tool.nso
+liero-tool.pfs0
+liero.elf
+liero.nacp
+liero.nro
+liero.nso
+liero.pfs0

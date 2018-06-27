@@ -3,7 +3,9 @@
 
 #include "tl/platform.h"
 
+#ifndef SWITCH
 #define inline TL_INLINE
+#endif
 
 #include "libavutil/mathematics.h"
 #include "libavformat/avformat.h"

@@ -3,7 +3,7 @@
 #include <string.h>
 #include <math.h>
 
-#include "videotest.h"
+#include "video_recorder.h"
 
 #define M_PI (3.14159265358979323846264338327950)
 

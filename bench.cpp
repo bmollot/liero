@@ -5,8 +5,10 @@
 #include <vector>
 #include <memory>
 
+#ifndef SWITCH
 #include <intrin.h>
 #include <xmmintrin.h>
+#endif
 
 template<typename T, int Limit>
 struct FixedObjectList

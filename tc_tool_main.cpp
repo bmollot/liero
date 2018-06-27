@@ -3,10 +3,31 @@
 #include "filesystem.hpp"
 #include "reader.hpp"
 
+#ifdef SWITCH
+// Needed for logging
+#include <unistd.h>
+#include <fcntl.h>
+#endif
+
 int main(int argc, char *argv[])
 {
 	std::string configPath; // Default to current dir
 	std::string exePath, tcName;
+
+	#ifdef SWITCH
+	// Clone stdout to a file, as default stdout on Switch
+	// isn't accessible.
+	int log = open("debug.txt", O_WRONLY);
+	dup2(log, 1);
+	printf("Started...\n");
+	// Provide arguments manually, as there is no
+	// way to specify them on console.
+	char arg0[] = "liero";
+	char arg1[] = "liero";
+	argv[0] = arg0;
+	argv[1] = arg1;
+	argc = 2;
+	#endif
 	
 	for(int i = 1; i < argc; ++i)
 	{

@@ -72,9 +72,9 @@ try
 
 		for (auto const& path : di)
 		{
-			if (getExtension(path) == "lrp")
+			if (getExtension(path.name) == "lrp")
 			{
-				auto const& fullPath = joinPath(root, path);
+				auto const& fullPath = joinPath(root, path.name);
 				if (match(fullPath, replayPath))
 				{
 					printf("Converting %s\n", fullPath.c_str());
