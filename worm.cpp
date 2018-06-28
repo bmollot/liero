@@ -9,7 +9,9 @@
 
 #include <gvl/serialization/context.hpp>
 #include <gvl/serialization/archive.hpp>
+// #ifndef NO_REPLAY
 #include "replay.hpp"
+// #endif
 
 #include <gvl/crypt/gash.hpp>
 #include <gvl/io2/fstream.hpp>
@@ -19,6 +21,7 @@ struct Point
 	int x, y;
 };
 
+#ifndef NO_REPLAY
 gvl::gash::value_type& WormSettings::updateHash()
 {
 	GameSerializationContext context;
@@ -31,11 +34,14 @@ gvl::gash::value_type& WormSettings::updateHash()
 	hash = ha.final();
 	return hash;
 }
+#endif
 
 void WormSettings::saveProfile(FsNode node)
 {
+	#ifndef NO_EXCEPTIONS
 	try
 	{
+	#endif
 		//auto const& fullPath = path + ".lpf";
 		//create_directories(fullPath);
 		//gvl::sink str(new gvl::file_bucket_pipe(fullPath.c_str(), "wb"));
@@ -48,18 +54,22 @@ void WormSettings::saveProfile(FsNode node)
 		profileNode = node;
 		GameSerializationContext context;
 		archive(gvl::out_archive<gvl::octet_writer, GameSerializationContext>(writer, context), *this);
+	#ifndef NO_EXCEPTIONS
 	}
 	catch(gvl::stream_error& e)
 	{
 		Console::writeWarning(std::string("Stream error saving profile: ") + e.what());
 	}
+	#endif
 }
 
 void WormSettings::loadProfile(FsNode node)
 {
 	int oldColor = color;
+	#ifndef NO_EXCEPTIONS
 	try
 	{
+	#endif
 		//gvl::source str(gvl::to_source(new gvl::file_bucket_pipe(path.c_str(), "rb")));
 		
 		//gvl::octet_reader reader(str);
@@ -69,12 +79,14 @@ void WormSettings::loadProfile(FsNode node)
 		profileNode = node;
 		GameSerializationContext context;
 		archive(gvl::in_archive<gvl::octet_reader, GameSerializationContext>(reader, context), *this);
+	#ifndef NO_EXCEPTIONS // TODO: Gracefully handle failure here
 	}
 	catch(gvl::stream_error& e)
 	{
 		Console::writeWarning(std::string("Stream error loading profile: ") + e.what());
 		Console::writeWarning("The profile may just be old, in which case there is nothing to worry about");
 	}
+	#endif
 	
 	color = oldColor;  // We preserve the color
 }

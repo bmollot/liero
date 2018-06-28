@@ -31,7 +31,13 @@ struct file_bucket_pipe : bucket_pipe
 	{
 		f = f_init;
 		if(!f)
+		{
+			#ifdef NO_EXCEPTIONS
+			printf("FSTREAM ERROR: Couldn't open file\n");
+			#else
 			throw std::runtime_error("Couldn't open file");
+			#endif
+		}
 	}
 
 	void close()

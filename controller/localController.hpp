@@ -47,7 +47,9 @@ struct LocalController : CommonController
 	State state;
 	int fadeValue;
 	bool goingToMenu;
+	#ifndef NO_REPLAY
 	std::unique_ptr<ReplayWriter> replay;
+	#endif
 };
 
 #endif // LIERO_CONTROLLER_LOCAL_CONTROLLER_HPP

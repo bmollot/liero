@@ -16,6 +16,9 @@ Profiles/
 # Editor refuse
 .vscode/
 
+# GDB refuse
+.gdb_history
+
 # Nintendo Switch build specific
 nx-build/
 liero-tool.elf

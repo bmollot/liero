@@ -19,12 +19,15 @@
 
 #include <gvl/io2/fstream.hpp>
 
+#ifndef NO_REPLAY
 #include "controller/replayController.hpp"
+#endif
 #include "controller/localController.hpp"
 #include "controller/controller.hpp"
 
 #include "gfx/macros.hpp"
 
+#include "menu/enumBehavior.hpp"
 #include "menu/arrayEnumBehavior.hpp"
 #include "menu/fileSelector.hpp"
 
@@ -706,9 +709,9 @@ void Gfx::flip()
 			scaleDraw(src, 320, 200, srcPitch, dest, destPitch, mag, pal32);
 		}
 	}
-	
+
 	SDL_Flip(back);
-	
+
 	lastUpdateRect = updateRect;
 	
 	if(settings->screenSync)
@@ -725,13 +728,15 @@ void Gfx::flip()
 			
 			SDL_Delay(wantedTime - now);
 		}
-		
+
 		lastFrame = SDL_GetTicks();
 		while((SDL_GetTicks() - lastFrame) > delay)
 			lastFrame += delay;
 	}
 	else
+	{
 		SDL_Delay(0);
+	}
 }
 
 void playChangeSound(Common& common, int change)
@@ -1039,17 +1044,21 @@ void Gfx::selectLevel()
 
 			ReaderFile f;
 
+			#ifndef NO_EXCEPTIONS
 			try
 			{
+			#endif
 				if (level.load(common, *settings, sel->getFsNode().toOctetReader()))
 				{
 					level.drawMiniature(frozenScreen, 134, 162, 10);
 				}
+			#ifndef NO_EXCEPTIONS
 			}
 			catch (std::runtime_error&)
 			{
 				// Ignore
 			}
+			#endif
 
 			previewNode = sel;
 		}
@@ -1156,7 +1165,12 @@ int Gfx::selectReplay()
 	{
 		screenBmp.copy(frozenScreen);
 		
+		#ifdef NO_REPLAY
+		string title = "Replays are disabled";
+		#else
 		string title = "Select replay:";
+		#endif
+		
 		if (!replaySel.currentNode->fullPath.empty())
 		{
 			title += ' ';
@@ -1182,7 +1196,9 @@ int Gfx::selectReplay()
 				// Reset controller before opening the replay, since we may be recording it
 				controller.reset();
 				
+				#ifndef NO_REPLAY // NOOP if replays are disabled
 				controller.reset(new ReplayController(common, sel->getFsNode().toSource()));
+				#endif
 				
 				return MainMenu::MaReplay;
 			}
@@ -1623,7 +1639,7 @@ restart:
 	{
 		clear();
 		controller->draw(*this);
-		
+
 		int selection = menuLoop();
 		
 		if(selection == MainMenu::MaNewGame)
@@ -1665,16 +1681,16 @@ restart:
 		{
 			goto restart;
 		}
-		
+
 		controller->focus();
-		
+
 		while(true)
 		{
 			if(!controller->process())
 				break;
 			clear();
 			controller->draw(*this);
-			
+
 			flip();
 			process(controller.get());
 		}
@@ -1762,7 +1778,7 @@ int Gfx::menuLoop()
 	mainMenu.moveToFirstVisible();
 	settingsMenu.moveToFirstVisible();
 	settingsMenu.updateItems(common);
-	
+
 	fadeValue = 0;
 	curMenu = &mainMenu;
 
@@ -1774,12 +1790,12 @@ int Gfx::menuLoop()
 	do
 	{
 		drawBasicMenu();
-		
+
 		if(curMenu == &mainMenu)
 			settingsMenu.draw(common, true);
 		else
 			curMenu->draw(common, false);
-		
+
 		if(testSDLKeyOnce(SDLK_ESCAPE))
 		{
 			if(curMenu == &mainMenu)

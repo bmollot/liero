@@ -193,9 +193,13 @@ void archive_liero(Archive ar, Settings& settings, Rand& rand)
 	
 	ar.pascal_str(settings.levelFile, 9);
 
-	// TODO: Slightly bad way to detect whether extensions exist, no?	
+	// TODO: Slightly bad way to detect whether extensions exist, no?
+	//   Sure is. With exceptions disabled, any missing extension will
+	//   cause an abort().
+	#ifndef NO_EXCEPTIONS
 	try
 	{
+	#endif
 		// Extensions
 		int fileExtensionVersion = myGameVersion;
 		ar.ui8(fileExtensionVersion);
@@ -248,6 +252,7 @@ void archive_liero(Archive ar, Settings& settings, Rand& rand)
 
 		gvl::enable_when(ar, fileExtensionVersion >= 6)
 			.b(settings.allowViewingSpawnPoint, false);
+	#ifndef NO_EXCEPTIONS
 	}
 	catch(std::runtime_error&)
 	{
@@ -260,6 +265,7 @@ void archive_liero(Archive ar, Settings& settings, Rand& rand)
 			ws.WormSettingsExtensions::operator=(WormSettingsExtensions());
 		}
 	}
+	#endif
 }
 
 

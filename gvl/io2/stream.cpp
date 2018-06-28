@@ -27,8 +27,13 @@ void octet_reader::close()
 uint8_t octet_reader::underflow_get_()
 {
 	auto status = next_piece_();
-	if (status != source_result::ok)
+	if (status != source_result::ok) {
+		#ifdef NO_EXCEPTIONS
+		return 0; // We have to return something
+		#else
 		throw runtime_error("Read error in get()");
+		#endif
+	}
 		
 	return *cur_++;
 }

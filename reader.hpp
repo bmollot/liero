@@ -57,7 +57,14 @@ struct ReaderFile : gvl::noncopyable
 	void seekg(size_t newPos)
 	{
 		if (newPos > len)
+		{
+			#ifdef NO_EXCEPTIONS
+			pos = len - 1;
+			printf("READER ERROR: Attempted to seek past EOF\n");
+			#else
 			throw gvl::stream_read_error(gvl::source_result::eos, "EOF in seekg()");
+			#endif
+		}
 		pos = newPos;
 	}
 
@@ -74,14 +81,28 @@ struct ReaderFile : gvl::noncopyable
 	uint8_t get()
 	{
 		if (pos >= len)
+		{
+			#ifdef NO_EXCEPTIONS
+			printf("READER ERROR: EOF in get()\n");
+			return 0; // I have to return something
+			#else
 			throw gvl::stream_read_error(gvl::source_result::eos, "EOF in get()");
+			#endif
+		}
 		return data[pos++];
 	}
 
 	void get(uint8_t* p, size_t l)
 	{
 		if (pos + l > len)
+		{
+			#ifdef NO_EXCEPTIONS
+			printf("READER ERROR: EOF IN get(len)\n");
+			return; // refuse to do an OOB memcpy
+			#else
 			throw gvl::stream_read_error(gvl::source_result::eos, "EOF in get()");
+			#endif
+		}
 		std::memcpy(p, data + pos, l);
 		pos += l;
 	}

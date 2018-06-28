@@ -32,7 +32,9 @@
 void benchAll();
 
 int gameEntry(int argc, char* argv[])
+#ifndef NO_EXCEPTIONS
 try
+#endif
 {
 	// TODO: Better PRNG seeding
 	gfx.rand.seed(Uint32(std::time(0)));
@@ -119,7 +121,7 @@ try
 		tcName = "Liero v1.33";
 
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
-	
+
 	initKeys();
 	
 	precomputeTables();
@@ -137,7 +139,7 @@ try
 	common->load(std::move(lieroRoot));
 	gfx.common = common;
 	gfx.loadPalette(*common); // This gets the palette from common
-	
+
 	if(!gfx.loadSettings(configNode / "liero.cfg"))
 	{
 		if(!gfx.loadSettingsLegacy(configNode / "LIERO.DAT"))
@@ -161,10 +163,12 @@ try
 	
 	return 0;
 }
+#ifndef NO_EXCEPTIONS
 catch(std::exception&)
 {
 	SDL_Quit();
 	throw;
 }
+#endif
 
 #endif // UUID_DC1D9513CDD34960AB8A648004DA149D

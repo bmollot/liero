@@ -6,6 +6,7 @@
 #include "worm.hpp"
 #include <gvl/io2/convert.hpp>
 #include <gvl/io2/fstream.hpp>
+#include <gvl/serialization/coding.hpp>
 #include <map>
 #include <string>
 #include "common_model.hpp"
@@ -448,7 +449,7 @@ void Common::load(FsNode node)
 		OctetTextReader nReader((dir / (w.idStr + ".cfg")).toOctetReader());
 		archive_text(*this, w, nReader.r);
 	}
-
+	
 	for (auto& w : sobjectTypes)
 	{
 		auto dir = node / "sobjects";
@@ -456,7 +457,7 @@ void Common::load(FsNode node)
 		OctetTextReader sReader((dir / (w.idStr + ".cfg")).toOctetReader());
 		archive_text(*this, w, sReader.r);
 	}
-
+	
 	precompute();
 }
 

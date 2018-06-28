@@ -39,13 +39,14 @@ void ReplayController::focus()
 	}
 	if(state == StateInitial)
 	{
+		#ifndef NO_EXCEPTIONS
 		try
 		{
-#if 1 // TEMP
+		#endif
+			// TODO: Implement sound in replays
 			game = replay->beginPlayback(common, gvl::shared_ptr<SoundPlayer>(new NullSoundPlayer()));
-#else
-			game = replay->beginPlayback(common, gvl::shared_ptr<SoundPlayer>(new DefaultSoundPlayer(*common)));
-#endif
+			// game = replay->beginPlayback(common, gvl::shared_ptr<SoundPlayer>(new DefaultSoundPlayer(*common)));
+		#ifndef NO_EXCEPTIONS
 		}
 		catch(std::runtime_error& e)
 		{
@@ -54,6 +55,7 @@ void ReplayController::focus()
 			fadeValue = 0;
 			return;
 		}
+		#endif
 		// Changing state first when game is available
 		changeState(StateGame);
 	}
@@ -78,13 +80,16 @@ bool ReplayController::process()
 		{
 			if(replay.get())
 			{
+				#ifndef NO_EXCEPTIONS
 				try
 				{
+				#endif
 					if(!replay->playbackFrame(gfx))
 					{
 						// End of replay
 						replay.reset();
 					}
+				#ifndef NO_EXCEPTIONS
 				}
 				catch(gvl::stream_error& e)
 				{
@@ -98,6 +103,7 @@ bool ReplayController::process()
 					changeState(StateGameEnded);
 					replay.reset();
 				}
+				#endif
 			}
 			game->processFrame();
 

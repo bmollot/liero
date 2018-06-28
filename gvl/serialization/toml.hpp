@@ -8,6 +8,11 @@
 #include <vector>
 #include <stdexcept>
 
+#if !defined(DEBUG) && !defined(DEBUG_FILE)
+#define U_AEM6DAF2FE546675DAS
+#define printf(...) 0
+#endif
+
 namespace gvl
 {
 
@@ -386,7 +391,12 @@ inline void resize(T(&arr)[N], std::size_t s)
 {
 	if (N != s)
 	{
+		#ifdef NO_EXCEPTIONS
+		printf("TOML ERROR: Tried to resize fixed-size array\n");
+		abort();
+		#else
 		throw parse_error();
+		#endif
 	}
 }
 
@@ -400,6 +410,7 @@ struct reader
 	: root(object())
 	, r(r)
 	{
+		printf("toml::reader init reached\n");
 		start();
 	}
 
@@ -448,20 +459,37 @@ struct reader
 							a->v.emplace_back(object());
 						}
 						else if (a->v.empty())
+						{
+							#ifdef NO_EXCEPTIONS
+							printf("TOML ERROR: Is this an empty array or something?\n");
+							abort();
+							#else
 							throw parse_error();
+							#endif
+						}
 
 						c = a->v.back();
 					}
 
 					if (c.tt != t_object)
 					{
+						#ifdef NO_EXCEPTIONS
+						printf("TOML ERROR: Didn't find an object after an array?\n");
+						abort();
+						#else
 						throw parse_error();
+						#endif
 					}
 				}
 			}
 			else
 			{
+				#ifdef NO_EXCEPTIONS
+				printf("TOML ERROR: Specified path doesn't exist (%s)\n", e.c_str());
+				abort();
+				#else
 				throw parse_error();
+				#endif
 			}
 		}
 
@@ -520,7 +548,15 @@ struct reader
 				}
 				else
 				{
+					#ifdef NO_EXCEPTIONS
+					printf("TOML ERROR: Found value, but it's not an object. name:\t");
+					for (size_t i = 0; i < name.size(); ++i)
+						printf("%s.", name[i]);
+					printf("\n");
+					abort();
+					#else
 					throw parse_error();
+					#endif
 				}
 			}
 		}
@@ -572,7 +608,14 @@ struct reader
 		if (name)
 		{
 			if (cur.tt != t_object)
+			{
+				#ifdef NO_EXCEPTIONS
+				printf("TOML ERROR: f(%s), cur's tt isn't t_object\n", name);
+				abort();
+				#else
 				throw parse_error();
+				#endif
+			}
 			return ((object*)cur.u.s)->f.at(name);
 		}
 		else
@@ -597,7 +640,14 @@ struct reader
 		value parent(cur);
 		value v(f(name));
 		if (v.tt != t_array)
+		{
+			#ifdef NO_EXCEPTIONS
+			printf("TOML ERROR: v (%s) isn't an array\n", name);
+			abort();
+			#else
 			throw parse_error();
+			#endif
+		}
 		array& jv = *(array*)v.u.s;
 		resize(arr, jv.v.size());
 
@@ -622,7 +672,15 @@ struct reader
 	reader& i32(char const* name, int32_t& v)
 	{
 		value jv(f(name));
-		if (jv.tt != t_integer) throw parse_error();
+		if (jv.tt != t_integer)
+		{
+			#ifdef NO_EXCEPTIONS
+			printf("TOML ERROR: jv (%s) isn't an integer\n", name);
+			abort();
+			#else
+			throw parse_error();
+			#endif
+		}
 		v = jv.u.i;
 		return *this;
 	}
@@ -630,7 +688,15 @@ struct reader
 	reader& u32(char const* name, uint32_t& v)
 	{
 		value jv(f(name));
-		if (jv.tt != t_integer) throw parse_error();
+		if (jv.tt != t_integer) 
+		{
+			#ifdef NO_EXCEPTIONS
+			printf("TOML ERROR: jv (%s) isn't an unsigned integer\n", name);
+			abort();
+			#else
+			throw parse_error();
+			#endif
+		}
 		v = (uint32_t)jv.u.i;
 		return *this;
 	}
@@ -638,7 +704,15 @@ struct reader
 	reader& b(char const* name, bool& v)
 	{
 		value jv(f(name));
-		if (jv.tt != t_bool) throw parse_error();
+		if (jv.tt != t_bool)
+		{
+			#ifdef NO_EXCEPTIONS
+			printf("TOML ERROR: jv (%s) isn't a boolean\n", name);
+			abort();
+			#else
+			throw parse_error();
+			#endif
+		}
 		v = jv.u.i != 0;
 		return *this;
 	}
@@ -653,7 +727,15 @@ struct reader
 		}
 		else
 		{
-			if (jv.tt != t_string) throw parse_error();
+			if (jv.tt != t_string)
+			{
+				#ifdef NO_EXCEPTIONS
+				printf("TOML ERROR: jv (%s) isn't a resolver\n", name);
+				abort();
+				#else
+				throw parse_error();
+				#endif
+			}
 			resolver.r2v(v, ((string*)jv.u.s)->s);
 		}
 		return *this;
@@ -662,7 +744,15 @@ struct reader
 	reader& str(char const* name, std::string& s)
 	{
 		value jv(f(name));
-		if (jv.tt != t_string) throw parse_error();
+		if (jv.tt != t_string)
+		{
+			#ifdef NO_EXCEPTIONS
+			printf("TOML ERROR: jv (%s) isn't a string\n", name);
+			abort();
+			#else
+			throw parse_error();
+			#endif
+		}
 		s = ((string*)jv.u.s)->s;
 		return *this;
 	}
@@ -683,7 +773,14 @@ struct reader
 	void check(uint8_t e)
 	{
 		if (c != e)
+		{
+			#ifdef NO_EXCEPTIONS
+			printf("TOML ERROR: check failed (%c != %c)\n", c, e);
+			abort();
+			#else
 			throw parse_error();
+			#endif
+		}
 		next();
 	}
 
@@ -733,7 +830,12 @@ struct reader
 				}
 				else
 				{
+					#ifdef NO_EXCEPTIONS
+					printf("TOML ERROR: Encountered invalid escape sequence in string (%s)\n", s.s.c_str());
+					abort();
+					#else
 					throw parse_error();
+					#endif
 				}
 			}
 			else
@@ -820,12 +922,22 @@ struct reader
 			return value(neg ? -v : v);
 		}
 
+		#ifdef NO_EXCEPTIONS
+		printf("TOML ERROR: val() failed to find a valid token (at %c)\n", c);
+		abort();
+		#else
 		throw parse_error();
+		#endif
 	}
 };
 
 }
 
 }
+
+#ifdef U_AEM6DAF2FE546675DAS
+#undef U_AEM6DAF2FE546675DAS
+#undef printf
+#endif
 
 #endif // GVL_SERIALIZATION_TOML_HPP

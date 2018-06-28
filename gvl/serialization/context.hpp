@@ -3,7 +3,9 @@
 
 #include <map>
 #include <vector>
+#ifndef NO_RTTI
 #include "../support/type_info.hpp"
+#endif
 
 namespace gvl
 {
@@ -84,6 +86,7 @@ struct serialization_context
 	DerivedT& derived()
 	{ return *static_cast<DerivedT*>(this); }
 	
+	#ifndef NO_RTTI
 	type& get_type(gvl::type_info ti)
 	{
 		typename std::map<gvl::type_info, type*>::iterator i = types.find(ti);
@@ -155,13 +158,16 @@ struct serialization_context
 		type& t = get_type(gvl::type_id<T>());
 		t.remove(v);
 	}
-	
+	#endif
+
 	~serialization_context()
 	{
+		#ifndef NO_RTTI
 		for(typename std::map<gvl::type_info, type*>::iterator i = types.begin(); i != types.end(); ++i)
 		{
 			delete i->second;
 		}
+		#endif
 	}
 	
 private:
@@ -169,7 +175,9 @@ private:
 	serialization_context(serialization_context const&);
 	serialization_context& operator=(serialization_context const&);
 	
+	#ifndef NO_RTTI
 	std::map<gvl::type_info, type*> types;
+	#endif
 };
 
 struct default_serialization_context : serialization_context<default_serialization_context>

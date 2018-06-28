@@ -109,6 +109,7 @@ struct in_archive
 		return *this;
 	}
 	
+	#ifndef NO_RTTI
 	template<typename T, typename Creator>
 	in_archive& obj(T*& v, Creator creator)
 	{
@@ -148,6 +149,7 @@ struct in_archive
 	{
 		return obj(v, gvl::new_creator<T>());
 	}
+	#endif
 
 	template<typename Ref, typename RefCreator>
 	in_archive& objref(Ref& v, RefCreator refCreator)
@@ -190,7 +192,13 @@ struct in_archive
 	{
 		uint32_t v = gvl::read_uint32(reader);
 		if(v != 0x12345678)
+		{
+			#ifdef NO_EXCEPTIONS
+			printf("ARCHIVE ERROR: Expected checkpoint here\n");
+			#else
 			throw archive_check_error("Expected checkpoint here");
+			#endif
+		}
 		return *this;
 	}
 	
@@ -288,6 +296,7 @@ struct out_archive
 		return *this;
 	}
 	
+	#ifndef NO_RTTI
 	template<typename T, typename Creator>
 	out_archive& obj(T*& v, Creator creator)
 	{
@@ -325,6 +334,7 @@ struct out_archive
 	{
 		return obj(v, 0);
 	}
+	#endif
 
 	template<typename Ref, typename RefCreator>
 	out_archive& objref(Ref& v, RefCreator refCreator)

@@ -3,7 +3,9 @@
 #include "game.hpp"
 #include "worm.hpp"
 #include "viewport.hpp"
+#ifndef NO_RTTI // NO_RTTI and replays are not yet compatible
 #include <gvl/support/type_info.hpp>
+#endif
 #include <gvl/serialization/archive.hpp>
 #include <gvl/io2/deflate_filter.hpp>
 

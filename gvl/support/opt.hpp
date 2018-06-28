@@ -34,10 +34,17 @@ struct prepared_division
 	prepared_division(uint32_t divisor_init)
 	: divisor(divisor_init)
 	{
+		#ifdef NO_EXCEPTIONS
+		// Just silently ignore these errors if we can't throw.
+		// This should result in a runtime error later.
+		if (divisor == 0 || divisor == 1)
+			return;
+		#else
 		if(divisor == 0)
 			throw std::domain_error("Prepared division by zero");
 		else if(divisor == 1)
 			throw std::invalid_argument("prepared_division cannot divide by 1");
+		#endif
 			
 		int b = top_bit(divisor);
 		

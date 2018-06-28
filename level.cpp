@@ -275,14 +275,18 @@ void Level::generateFromSettings(Common& common, Settings const& settings, Rand&
 			path += ".LEV";
 
 		bool loaded = false;
+		#ifndef NO_EXCEPTIONS
 		try
 		{
+		#endif
 			loaded = load(common, settings, FsNode(path).toOctetReader());
+		#ifndef NO_EXCEPTIONS
 		}
 		catch (std::runtime_error&)
 		{
 			// Ignore
 		}
+		#endif
 		
 		if (!loaded)
 			generateRandom(common, settings, rand);

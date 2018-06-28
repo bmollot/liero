@@ -186,11 +186,13 @@ BOOST_HANDLE handle, BOOST_SYSTEM_DIRECTORY_TYPE & )
 	errno = 0;
 	if ( (dp = ::readdir( handle )) == 0 )
 	{
+		#ifndef NO_EXCEPTIONS // skip error check if we can't throw
 		if ( errno != 0 )
 		{
 			throw std::runtime_error("Error iterating directory");
 		}
-		else { return filename_result(); } // end reached
+		#endif
+		return filename_result(); // end reached
 	}
 	return filename_result(dp->d_name);
 }

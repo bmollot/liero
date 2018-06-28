@@ -159,8 +159,13 @@ struct FsNode
 	gvl::sink toSink() const
 	{
 		auto s = imp->tryToSink();
-		if (!s)
+		if (!s) {
+			#ifdef NO_EXCEPTIONS
+			return s;
+			#else
 			throw std::runtime_error("Could not write " + fullPath());
+			#endif
+		}
 		return std::move(s);
 	}
 };

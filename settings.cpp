@@ -90,15 +90,19 @@ typedef gvl::out_archive<gvl::octet_writer> out_archive_t;
 
 bool Settings::load(FsNode node, Rand& rand)
 {
+	#ifndef NO_EXCEPTIONS
 	try
 	{
+	#endif
 		auto reader = node.toOctetReader();
 		#ifdef NO_EXCEPTIONS
 		// If exceptions are disabled, making a reader from a nonexistant file
 		// will not throw, so we need to check that it's not empty manually.
 		if (reader.empty())
+		{
 			printf("Created reader was empty, Settings::load failed\n");
 			return false;
+		}
 		// If any of the below operations throw, Switch will panic.
 		// I think they throw if the file exists but is malformed. Oh well.
 		#endif
@@ -107,41 +111,50 @@ bool Settings::load(FsNode node, Rand& rand)
 		gvl::toml::reader<gvl::octet_reader> ar(reader);
 
 		archive_text(*this, ar);
+	#ifndef NO_EXCEPTIONS
 	}
 	catch (std::runtime_error&)
 	{
 		return false;
 	}
+	#endif
 	
 	return true;
 }
 
 bool Settings::loadLegacy(FsNode node, Rand& rand)
 {
+	#ifndef NO_EXCEPTIONS
 	try
 	{
+	#endif
 		auto reader = node.toOctetReader();
 		#ifdef NO_EXCEPTIONS
 		// If exceptions are disabled, making a reader from a nonexistant file
 		// will not throw, so we need to check that it's not empty manually.
 		if (reader.empty())
+		{
 			printf("Created reader was empty, Settings::load failed\n");
 			return false;
+		}
 		// If any of the below operations throw, Switch will panic.
 		// I think they throw if the file exists but is malformed. Oh well.
 		#endif
 		gvl::default_serialization_context context;
 	
 		archive_liero(in_archive_t(reader, context), *this, rand);
+	#ifndef NO_EXCEPTIONS
 	}
 	catch (std::runtime_error&)
 	{
 		return false;
 	}
+	#endif
 	
 	return true;
 }
 
+#ifndef NO_REPLAY
 gvl::gash::value_type& Settings::updateHash()
 {
 	gvl::default_serialization_context context;
@@ -153,6 +166,7 @@ gvl::gash::value_type& Settings::updateHash()
 	hash = ha.final();
 	return hash;
 }
+#endif
 
 void Settings::save(FsNode node, Rand& rand)
 {

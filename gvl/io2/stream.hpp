@@ -338,7 +338,13 @@ struct octet_reader
 	void attach(shared_ptr<stream_piece> head_new)
 	{
 		if(head_)
+		{
+			#ifdef NO_EXCEPTIONS
+			printf("STREAM ERROR: A head is already attached to this octet_reader\n");
+			#else
 			throw runtime_error("A head is already attached to this octet_reader");
+			#endif
+		}
 		
 		head_ = head_new;
 	}
@@ -363,8 +369,10 @@ protected:
 	
 	void check_head()
 	{
+		#ifndef NO_EXCEPTIONS // Does nothing if exceptions are disabled
 		if(!head_)
 			throw runtime_error("No head assigned to octet_stream_reader");
+		#endif
 	}
 
 	uint8_t const* cur_; // Pointer into head_->data
@@ -485,7 +493,13 @@ struct octet_writer : basic_text_writer<octet_writer>
 	void attach(shared_ptr<bucket_pipe> new_sink)
 	{
 		if (sink_)
+		{
+			#ifdef NO_EXCEPTIONS // Ignore replacing sink if exceptions are disabled
+			printf("STREAM ERROR: A sink is already attached to the octet_writer\n");
+			#else
 			throw runtime_error("A sink is already attached to the octet_writer");
+			#endif
+		}
 		sink_ = new_sink;
 		buffer_.reset(bucket_data_mem::create(default_initial_bucket_size, default_initial_bucket_size));
 		read_in_buffer_();
@@ -494,7 +508,13 @@ struct octet_writer : basic_text_writer<octet_writer>
 	void check_sink()
 	{
 		if(!sink_)
+		{
+			#ifdef NO_EXCEPTIONS
+			printf("STREAM ERROR: No sink assigned to octet_writer\n");
+			#else
 			throw runtime_error("No sink assigned to octet_writer");
+			#endif
+		}
 	}
 	
 	void swap(octet_writer& b)

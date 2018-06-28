@@ -140,8 +140,10 @@ struct WorkQueue
 
 	static int worker(void* self)
 	{
+		#ifndef NO_EXCEPTIONS
 		try
 		{
+		#endif
 			WorkQueue* queue = static_cast<WorkQueue*>(self);
 
 			while (true)
@@ -155,10 +157,12 @@ struct WorkQueue
 				#endif
 				work->run();
 			}
+		#ifndef NO_EXCEPTIONS
 		}
 		catch (StopWorker&)
 		{
 		}
+		#endif
 
 		return 0;
 	}

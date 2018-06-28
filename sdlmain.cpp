@@ -2,7 +2,7 @@
 #include <exception>
 #include <string>
 
-#ifdef SWITCH
+#ifdef DEBUG_FILE
 // Needed for logging
 #include <unistd.h>
 #include <fcntl.h>
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 #else
 int main(int argc, char *argv[])
 {
-	#if defined(SWITCH) && defined(DEBUG_FILE)
+	#if defined(DEBUG_FILE)
 	// Clone stdout to a file, as default stdout on Switch
 	// isn't accessible.
 	int log = open(DEBUG_FILE, O_WRONLY);

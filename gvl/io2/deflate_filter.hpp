@@ -193,7 +193,12 @@ struct deflate_source : bucket_pipe, octet_reader
 			}
 			else if (ret != MZ_OK)
 			{
+				#ifdef NO_EXCEPTIONS
+				printf("DEFLATE SOURCE ERROR: Error while defalting\n");
+				return source_result::error;
+				#else
 				throw std::runtime_error("Error while deflating");
+				#endif
 			}
 			else if (deflate_flags == MZ_SYNC_FLUSH && str.avail_in == 0)
 			{

@@ -109,8 +109,10 @@ void LocalController::onKey(int key, bool keyState)
 // Called when the controller loses focus. When not focused, it will not receive key events among other things.
 void LocalController::unfocus()
 {
+	#ifndef NO_REPLAY
 	if(replay.get())
 		replay->unfocus();
+	#endif
 	if(state == StateWeaponSelection)
 		ws->unfocus();
 }
@@ -126,8 +128,10 @@ void LocalController::focus()
 	}
 	if(state == StateWeaponSelection)
 		ws->focus();
+	#ifndef NO_REPLAY
 	if(replay.get())
 		replay->focus();
+	#endif
 	if(state == StateInitial)
 		changeState(StateWeaponSelection);
 	game.focus(gfx);
@@ -159,11 +163,15 @@ bool LocalController::process()
 					game.statsRecorder->aiProcessTime(&worm, time);
 				}
 			}
+			#ifndef NO_REPLAY
 			if(replay.get())
 			{
+				#ifndef NO_EXCEPTIONS
 				try
 				{
+				#endif
 					replay->recordFrame();
+				#ifndef NO_EXCEPTIONS
 				}
 				catch(std::runtime_error& e)
 				{
@@ -171,7 +179,9 @@ bool LocalController::process()
 					Console::writeWarning("Replay recording aborted");
 					replay.reset();
 				}
+				#endif
 			}
+			#endif
 			game.processFrame();
 			
 			if(game.isGameOver())
@@ -251,10 +261,13 @@ void LocalController::changeState(State newState)
 			worm.lives = game.settings->lives;
 		}
 		
+		#ifndef NO_REPLAY
 		if(game.settings->extensions && game.settings->recordReplays)
 		{
+			#ifndef NO_EXCEPTIONS
 			try
 			{
+			#endif
 #if !ENABLE_TRACING
 				std::time_t ticks = std::time(0);
 				std::tm* now = std::localtime(&ticks);
@@ -291,6 +304,7 @@ void LocalController::changeState(State newState)
 
 				//replay.reset(new ReplayWriter(gvl::sink(new gvl::file_bucket_pipe(path.c_str(), "wb"))));
 				replay->beginRecord(game);
+			#ifndef NO_EXCEPTIONS
 			}
 			catch(std::runtime_error& e)
 			{
@@ -299,7 +313,9 @@ void LocalController::changeState(State newState)
 				fadeValue = 0;
 				return;
 			}
+			#endif
 		}
+		#endif
 
 		game.startGame();
 	}
@@ -323,10 +339,12 @@ void LocalController::changeState(State newState)
 
 void LocalController::endRecord()
 {
+	#ifndef NO_REPLAY
 	if(replay.get())
 	{
 		replay.reset();
 	}
+	#endif
 }
 	
 void LocalController::swapLevel(Level& newLevel)
