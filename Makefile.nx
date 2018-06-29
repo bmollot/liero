@@ -49,7 +49,7 @@ APP_ICON		:= $(DEVKITPRO)/libnx/default_icon.jpg
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
-DEFINES += -DSWITCH -D__AARCH64__ -DNO_EXCEPTIONS # -DDEBUG_FILE=\"debug.txt\"
+DEFINES += -DSWITCH -D__AARCH64__ -DNO_EXCEPTIONS -DJOYPAD_CONTROLS # -DDEBUG_FILE=\"debug.txt\"
 INCLUDE += -I$(TOPDIR)/libavcodec
 
 ARCH	:=	-march=armv8-a -mtune=cortex-a57 -mtp=soft -fPIE

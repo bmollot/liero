@@ -1796,7 +1796,11 @@ int Gfx::menuLoop()
 		else
 			curMenu->draw(common, false);
 
-		if(testSDLKeyOnce(SDLK_ESCAPE))
+		if(testSDLKeyOnce(SDLK_ESCAPE)
+			#ifdef JOYPAD_CONTROLS
+			|| testSDLKeyOnce(SDLK_b)
+			#endif
+		)
 		{
 			if(curMenu == &mainMenu)
 				mainMenu.moveToId(MainMenu::MaQuit);
@@ -1816,8 +1820,12 @@ int Gfx::menuLoop()
 			curMenu->movement(1);
 		}
 
-		if(testSDLKeyOnce(SDLK_RETURN)
-		|| testSDLKeyOnce(SDLK_KP_ENTER))
+		// Not the nicest if statement. Then again, this whole section of code could use a rethink.
+		if(testSDLKeyOnce(SDLK_RETURN) || testSDLKeyOnce(SDLK_KP_ENTER)
+			#ifdef JOYPAD_CONTROLS
+			|| testSDLKeyOnce(SDLK_a) || testSDLKeyOnce(SDLK_PLUS)
+			#endif
+		)
 		{
 			if(curMenu == &mainMenu)
 			{
@@ -1903,7 +1911,11 @@ int Gfx::menuLoop()
 			mainMenu.moveToId(MainMenu::MaPlayer2Settings);
 			playerSettings(1);
 		}
-		if (testSDLKeyOnce(SDLK_F7))
+		if (testSDLKeyOnce(SDLK_F7)
+			#ifdef JOYPAD_CONTROLS
+			|| testSDLKeyOnce(SDLK_MINUS)
+			#endif
+		)
 		{
 			mainMenu.moveToId(MainMenu::MaSettings);
 			curMenu = &settingsMenu; // Go into settings menu
