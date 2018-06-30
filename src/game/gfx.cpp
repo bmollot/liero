@@ -302,7 +302,7 @@ AnyInput joyToAnyInput[] =
 	/* 24 */ AnyPgDown, // Left Trigger
 	/* 25 */ AnyPgUp, // Right Trigger
 	/* 26 */ AnyConfirm, // Start/Plus Button
-	/* 27 */ AnyBack, // Select/Minus Button
+	/* 27 */ AnyReset, // Select/Minus Button
 	/* 28 */ AnyLeft, // Directional Pad West/Left
 	/* 29 */ AnyUp, // Directional Pad North/Up
 	/* 30 */ AnyRight, // Directional Pad East/Right
@@ -955,6 +955,11 @@ std::string Gfx::getKeyName(uint32_t key)
 void Gfx::clearKeys()
 {
 	std::memset(dosKeys, 0, sizeof(dosKeys));
+	std::memset(anyInputs, 0, sizeof(anyInputs));
+	for (Joystick& js : joysticks)
+	{
+		js.clearState();
+	}
 }
 
 void Gfx::preparePalette(SDL_PixelFormat* format, Color realPal[256], uint32_t (&pal32)[256])
@@ -1766,8 +1771,11 @@ void Gfx::infoBox(std::string const& text, int x, int y, bool clearScreen)
 
 bool Gfx::inputString(std::string& dest, std::size_t maxLen, int x, int y, int (*filter)(int), std::string const& prefix, bool centered)
 {
+	#ifdef SWITCH
+	return false;
+	#endif
 	std::string buffer = dest;
-	
+
 	while(true)
 	{
 		std::string str = prefix + buffer + '_';

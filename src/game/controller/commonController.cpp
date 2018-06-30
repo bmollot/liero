@@ -14,7 +14,7 @@ bool CommonController::process()
 {
 	bool ret = true;
 
-	if(gfx.testAnyInputOnce(AnyBack))
+	if(gfx.testAnyInputOnce(AnyReset))
 	{
 		ret = false;
 	}
