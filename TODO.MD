@@ -1,17 +1,13 @@
 # Refactoring
-Redo menu input; the duplication is disgusting.
 Change build/startup to use ROMFS for resources
-Introduce a new directory structure?
-Upstream changes?
 
 # Upgrades
 Controller-friendly text input
 Build in Joycon-oriented default profiles
-To SDL2
 
 # Triage
-Settings don't seem to be saving
+Are settings saving correctly?
+Do we detect joystick hotplugs? Particularly relevant given how Switch controllers work.
 
 # Broken
-Only main menu works
-Out-of-menu controls seem random?
+Entering a text entry menu leaves no way to return

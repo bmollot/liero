@@ -8,6 +8,7 @@
 #include "menu.hpp"
 #include "../common.hpp"
 #include <gvl/resman/shared_ptr.hpp>
+#include "../gfx.hpp"
 
 using std::string;
 using std::vector;
@@ -272,45 +273,45 @@ struct FileSelector
 
 	bool process()
 	{
-		if(gfx.testSDLKeyOnce(SDL_SCANCODE_UP))
+		if(gfx.testAnyInputOnce(AnyUp))
 		{
 			sfx.play(common, 26);
 			
 			menu().movement(-1);
 		}
 
-		if(gfx.testSDLKeyOnce(SDL_SCANCODE_DOWN))
+		if(gfx.testAnyInputOnce(AnyDown))
 		{
 			sfx.play(common, 25);
 			
 			menu().movement(1);
 		}
 
-		if(gfx.testSDLKeyOnce(SDL_SCANCODE_PAGEUP))
+		if(gfx.testAnyInputOnce(AnyPgUp))
 		{
 			sfx.play(common, 26);
 				
 			menu().movementPage(-1);
 		}
 
-		if(gfx.testSDLKeyOnce(SDL_SCANCODE_PAGEDOWN))
+		if(gfx.testAnyInputOnce(AnyPgDown))
 		{
 			sfx.play(common, 25);
 				
 			menu().movementPage(1);
 		}
 
-		if (gfx.testSDLKeyOnce(SDL_SCANCODE_ESCAPE))
+		if (gfx.testAnyInputOnce(AnyBack))
 		{
 			return false;
 		}
 
-		if (gfx.testSDLKeyOnce(SDL_SCANCODE_LEFT))
+		if (gfx.testAnyInputOnce(AnyLeft))
 		{
 			exit();
 		}
 
-		if (gfx.testSDLKeyOnce(SDL_SCANCODE_RIGHT))
+		if (gfx.testAnyInputOnce(AnyRight))
 		{
 			enter();
 		}

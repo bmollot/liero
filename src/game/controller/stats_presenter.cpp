@@ -399,24 +399,23 @@ void presentStats(NormalStatsRecorder& recorder, Game& game)
 		gfx.flip();
 		gfx.process();
 
-		if (gfx.testSDLKey(SDL_SCANCODE_DOWN))
+		if (gfx.testAnyInput(AnyDown))
 		{
 			destOffset = destOffset - 10;
 		}
-		else if (gfx.testSDLKey(SDL_SCANCODE_UP))
+		else if (gfx.testAnyInput(AnyUp))
 		{
 			destOffset = std::min(destOffset + 10.0, 0.0);
 		}
-		else if (gfx.testSDLKeyOnce(SDL_SCANCODE_RIGHT))
+		else if (gfx.testAnyInputOnce(AnyRight))
 		{
 			destPane = std::min(destPane + 1.0, 1.0);
 		}
-		else if (gfx.testSDLKeyOnce(SDL_SCANCODE_LEFT))
+		else if (gfx.testAnyInputOnce(AnyLeft))
 		{
 			destPane = std::max(destPane - 1.0, -1.0);
 		}
-		else if (gfx.testSDLKey(SDL_SCANCODE_RETURN) ||
-		         gfx.testSDLKey(SDL_SCANCODE_ESCAPE))
+		else if (gfx.testAnyInput(AnyConfirm))
 		{
 			break;
 		}

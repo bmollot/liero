@@ -251,7 +251,7 @@ struct WeaponEnumBehavior : EnumBehavior
 		std::string search;
 		if (gfx.inputString(search, 10, x, y))
 		{
-			uint32_t minimumi;
+			uint32_t minimumi = 0;
 			double minimum = std::numeric_limits<double>::max();
 			for (uint32_t i = min; i <= max; ++i)
 			{
@@ -271,6 +271,94 @@ struct WeaponEnumBehavior : EnumBehavior
 
 		return -1;
 	}
+};
+
+AnyInput joyToAnyInput[] =
+{
+	/* 00 */ AnyUnknown,
+	/* 01 */ AnyUnknown,
+	/* 02 */ AnyUnknown,
+	/* 03 */ AnyUnknown,
+	/* 04 */ AnyRight, // Left Analog +X
+	/* 05 */ AnyLeft,	// Left Analog -X
+	/* 06 */ AnyDown, // Left Analog +Y
+	/* 07 */ AnyUp, // Left Analog -Y
+	/* 08 */ AnyRight, // Right Analog +X
+	/* 09 */ AnyLeft, // Right Analog -X
+	/* 10 */ AnyDown, // Right Analog +Y
+	/* 11 */ AnyUp, // Right Analog -Y
+	/* 12 */ AnyUnknown,
+	/* 13 */ AnyUnknown,
+	/* 14 */ AnyUnknown,
+	/* 15 */ AnyUnknown,
+	/* 16 */ AnyConfirm, // Face Button A
+	/* 17 */ AnyBack, // Face Button B
+	/* 18 */ AnyConfirm, // Face Button X
+	/* 19 */ AnyBack, // Face Button Y
+	/* 20 */ AnyReset, // Left Stick Pressed
+	/* 21 */ AnyInverse, // Right Stick Pressed
+	/* 22 */ AnyPgUp, // Left Bumper
+	/* 23 */ AnyPgDown, // Right Bumper
+	/* 24 */ AnyPgDown, // Left Trigger
+	/* 25 */ AnyPgUp, // Right Trigger
+	/* 26 */ AnyConfirm, // Start/Plus Button
+	/* 27 */ AnyBack, // Select/Minus Button
+	/* 28 */ AnyLeft, // Directional Pad West/Left
+	/* 29 */ AnyUp, // Directional Pad North/Up
+	/* 30 */ AnyRight, // Directional Pad East/Right
+	/* 32 */ AnyDown, // Directional Pad South/Down
+};
+
+const AnyInput Z = AnyUnknown;
+AnyInput lieroToAnyInput[] =
+{
+	AnyUnknown,AnyBack,
+	AnyNumOne,AnyNumTwo,AnyNumThree,AnyNumFour,AnyNumFive,AnyNumSix,AnyNumSeven,AnyNumEight,AnyNumNine,AnyNumZero,
+	/* 0x0c: */
+	AnyUnknown,AnyUnknown,AnyBack,AnyUnknown,
+	AnyPgUp,AnyUp,AnyPgDown,AnyReset,AnyUp,AnyConfirm,AnyUnknown,AnyUp,AnyUnknown,AnyUnknown,
+	AnyPgUp,AnyPgDown,AnyConfirm,AnyInverse,
+	AnyLeft,AnyDown,AnyRight,AnyLeft,AnyDown,AnyRight,AnyLeft,AnyDown,AnyRight,
+	AnyUnknown,AnyUnknown,AnyUnknown,AnyUnknown,AnyUnknown,
+	AnyUnknown,AnyUnknown,AnyUnknown,AnyUnknown,AnyUnknown,AnyBack,AnyUnknown,
+	/* 0x33: */
+	AnyUnknown,AnyUnknown,AnyUnknown,AnyUnknown,AnyUnknown,
+	AnyUnknown,AnyConfirm,AnyUnknown,
+	AnyFirst,AnySecond,AnyThird,AnyFourth,AnyFifth,AnySixth,AnySeventh,AnyEigth,AnyNingth,AnyTength,
+	/* 0x45: */
+	AnyUnknown,AnyUnknown,
+	AnyNumSeven,AnyNumEight,AnyNumNine,AnyUnknown,AnyNumFour,AnyNumFive,AnyNumSix,AnyUnknown,
+	AnyNumOne,AnyNumTwo,AnyNumThree,AnyNumZero,AnyUnknown,
+	AnyUnknown,AnyUnknown,
+	AnyUnknown,AnyEleventh,AnyTwelfth,
+
+	Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z,Z, // 27 zeroes
+	AnyConfirm, // Enter (Pad)
+	AnyInverse, // Right Ctrl
+	Z, Z, Z, Z, Z, Z, Z, Z, Z, Z,
+	Z, Z, // 12 zeroes
+	AnyUnknown,
+	Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, // 10 zeroes
+	AnyUnknown, // / (Pad)
+	Z,
+	AnyUnknown,
+	AnyUnknown, // Right Alt
+	Z, Z, Z, Z, Z, Z, Z, Z, Z, Z,
+	Z, Z, Z, Z, // 14 zeroes
+	AnyUnknown, // Home
+	AnyUp, // Up
+	AnyPgUp, // Page Up
+	Z,
+	AnyLeft, // Left
+	Z,
+	AnyRight, // Right
+	Z,
+	AnyUnknown, // End
+	AnyDown, // Down
+	AnyPgDown, // Page Down
+	AnyUnknown, // Insert
+	AnyBack, // Delete
+	Z, Z, Z, Z, Z // 5 zeroes
 };
 
 Gfx::Gfx()
@@ -381,7 +469,6 @@ void Gfx::setVideoMode()
 			SDL_GetWindowPosition(sdlSpectatorWindow, &x, &y);
 		}
 		sdlWindow = SDL_CreateWindow("Liero 1.38o", x + 100, y + 50, windowW, windowH, flags);
-		printf("sdlWindow created\n");
 		// The Mac app will automatically use the .icns icon file located in the
 		// .app bundle, so don't override that here.
 		// The Switch doesn't support windows
@@ -411,13 +498,10 @@ void Gfx::setVideoMode()
 		SDL_DestroyRenderer(sdlRenderer);
 		sdlRenderer = NULL;
 	}
-	printf("About to create renderer\n");
 	// vertical sync is always disabled. Frame limiting is done manually below,
 	// to keep the correct speed
 	sdlRenderer = SDL_CreateRenderer(sdlWindow, -1, 0 /*SDL_RENDERER_PRESENTVSYNC*/);
-	printf("sdlRenderer created\n");
 	onWindowResize(SDL_GetWindowID(sdlWindow));
-	printf("window resize simulated\n");
 	// Set the spectator window's icon after the main window has been initialized.
 	// On Windows, this makes sure the icon in the stacked taskbar is the main icon.
 	// On MacOS this is commented out, because it only allows one icon and the spectator icon
@@ -706,6 +790,7 @@ void Gfx::processEvent(SDL_Event& ev, Controller* controller)
 			int jbtnBase = 4 + 2 * ev.jaxis.axis;
 
 			bool newBtnStates[2];
+			// printf("Axis: %d\tValue: %d\tThreshold: %d\n", ev.jaxis.axis, ev.jaxis.value, JoyAxisThreshold);
 			newBtnStates[0] = (ev.jaxis.value > JoyAxisThreshold);
 			newBtnStates[1] = (ev.jaxis.value < -JoyAxisThreshold);
 
@@ -771,6 +856,29 @@ void Gfx::process(Controller* controller)
 	{
 		processEvent(ev, controller);
 	}
+	bool new_inputs[NUM_ANYINPUTS] = {false};
+	for (size_t i = 0; i < joysticks.size(); ++i)
+	{
+		Joystick& js = joysticks[i];
+		for (int j = 0; j < MaxJoyButtons; ++j)
+		{
+			if (js.btnState[j])
+			{
+				new_inputs[joyToAnyInput[j]] = true;
+				js.btnState[j] = false; // "moves" the input, otherwise *Once funcs don't work
+			} 
+		}
+	}
+	for (size_t i = 0; i < MaxDOSKey; ++i)
+	{
+		if (dosKeys[i]) new_inputs[lieroToAnyInput[i]] = true;
+	}
+	std::copy(new_inputs, new_inputs + NUM_ANYINPUTS, anyInputs);
+	// for (size_t i = 0; i < NUM_ANYINPUTS; ++i)
+	// {
+	// 	printf("%lu: %d\t", i, anyInputs[i]);
+	// }
+	// printf("\n");
 }
 
 SDL_Keysym Gfx::waitForKey()
@@ -1275,8 +1383,7 @@ void Gfx::selectLevel()
 		if (!levSel.process())
 			break;
 
-		if(testSDLKeyOnce(SDL_SCANCODE_RETURN)
-		|| testSDLKeyOnce(SDL_SCANCODE_KP_ENTER))
+		if(testAnyInputOnce(AnyConfirm))
 		{
 			sfx.play(common, 27);
 			
@@ -1333,8 +1440,7 @@ void Gfx::selectProfile(WormSettings& ws)
 		if (!profileSel.process())
 			break;
 
-		if(testSDLKeyOnce(SDL_SCANCODE_RETURN)
-		|| testSDLKeyOnce(SDL_SCANCODE_KP_ENTER))
+		if(testAnyInputOnce(AnyConfirm))
 		{
 			auto* sel = profileSel.enter();
 
@@ -1392,8 +1498,7 @@ int Gfx::selectReplay()
 		if (!replaySel.process())
 			break;
 
-		if(testSDLKeyOnce(SDL_SCANCODE_RETURN)
-		|| testSDLKeyOnce(SDL_SCANCODE_KP_ENTER))
+		if(testAnyInputOnce(AnyConfirm))
 		{
 			auto* sel = replaySel.enter();
 
@@ -1449,8 +1554,7 @@ void Gfx::selectOptions()
 		if (!optionsSel.process())
 			break;
 
-		if(testSDLKeyOnce(SDL_SCANCODE_RETURN)
-		|| testSDLKeyOnce(SDL_SCANCODE_KP_ENTER))
+		if(testAnyInputOnce(AnyConfirm))
 		{
 			auto* sel = optionsSel.enter();
 
@@ -1506,8 +1610,7 @@ std::unique_ptr<Common> Gfx::selectTc()
 		if (!tcSel.process())
 			break;
 
-		if(testSDLKeyOnce(SDL_SCANCODE_RETURN)
-		|| testSDLKeyOnce(SDL_SCANCODE_KP_ENTER))
+		if(testAnyInputOnce(AnyConfirm))
 		{
 			auto* sel = tcSel.enter();
 
@@ -1571,37 +1674,37 @@ void Gfx::weaponOptions()
 		
 		weaponMenu.draw(common, playRenderer, false);
 
-		if(testSDLKeyOnce(SDL_SCANCODE_UP))
+		if(testAnyInputOnce(AnyUp))
 		{
 			sfx.play(common, 26);
 			weaponMenu.movement(-1);
 		}
 
-		if(testSDLKeyOnce(SDL_SCANCODE_DOWN))
+		if(testAnyInputOnce(AnyDown))
 		{
 			sfx.play(common, 25);
 			weaponMenu.movement(1);
 		}
 
-		if(testSDLKeyOnce(SDL_SCANCODE_LEFT))
+		if(testAnyInputOnce(AnyLeft))
 		{
 			weaponMenu.onLeftRight(common, -1);
 		}
-		if(testSDLKeyOnce(SDL_SCANCODE_RIGHT))
+		if(testAnyInputOnce(AnyRight))
 		{
 			weaponMenu.onLeftRight(common, 1);
 		}
 		
 		if(settings->extensions)
 		{
-			if(testSDLKeyOnce(SDL_SCANCODE_PAGEUP))
+			if(testAnyInputOnce(AnyPgUp))
 			{
 				sfx.play(common, 26);
 				
 				weaponMenu.movementPage(-1);
 			}
 
-			if(testSDLKeyOnce(SDL_SCANCODE_PAGEDOWN))
+			if(testAnyInputOnce(AnyPgDown))
 			{
 				sfx.play(common, 25);
 				
@@ -1614,7 +1717,7 @@ void Gfx::weaponOptions()
 		menuFlip();
 		process();
 
-		if(testSDLKeyOnce(SDL_SCANCODE_ESCAPE))
+		if(testAnyInputOnce(AnyBack))
 		{
 			int count = 0;
 			
@@ -1852,33 +1955,23 @@ void Gfx::playerSettings(int player)
 
 void Gfx::mainLoop()
 {
-	printf("Reached main loop\n");
 restart:
-	printf("- Main loop start\n");
 	controller.reset(new LocalController(common, settings));
-	printf("- Controller reset\n");
 	{
 		Level newLevel(*common);
 		newLevel.generateFromSettings(*common, *settings, rand);
 		controller->swapLevel(newLevel);
 	}
-	printf("- Level created\n");
 	controller->currentGame()->focus(this->playRenderer);
 	controller->currentGame()->focus(this->singleScreenRenderer);
-	printf("- Game focused\n");
 	// TODO: Unfocus game when necessary
 	
 	while(true)
 	{
-		printf("-- Inner loop start\n");
 		playRenderer.clear();
-		printf("-- playRenderer cleared\n");
 		controller->draw(this->playRenderer, false);
-		printf("-- controller drawn\n");
 		singleScreenRenderer.clear();
-		printf("-- singldeScreenRenderer cleared\n");
 		controller->draw(this->singleScreenRenderer, true);
-		printf("-- controller drawn (2)\n");
 		
 		int selection = menuLoop();
 		
@@ -2041,7 +2134,6 @@ void Gfx::openHiddenMenu()
 
 int Gfx::menuLoop()
 {
-	printf("--- Entered menuLoop\n");
 	Common& common = *this->common;
 	int centerX = singleScreenRenderer.renderResX / 2;
 
@@ -2049,7 +2141,6 @@ int Gfx::menuLoop()
 	std::memset(singleScreenRenderer.pal.entries, 0, sizeof(singleScreenRenderer.pal.entries));
 	flip();
 	process();
-	printf("--- process done\n");
 	fillRect(playRenderer.bmp, 0, 151, 160, 7, 0);
 	common.font.drawText(playRenderer.bmp, LS(Copyright2), 2, 152, 19);
 
@@ -2096,7 +2187,7 @@ int Gfx::menuLoop()
 		else
 			curMenu->draw(common, playRenderer, false);
 
-		if(testSDLKeyOnce(SDL_SCANCODE_ESCAPE))
+		if(testAnyInputOnce(AnyBack))
 		{
 			if(curMenu == &mainMenu)
 				mainMenu.moveToId(MainMenu::MaQuit);
@@ -2104,20 +2195,19 @@ int Gfx::menuLoop()
 				curMenu = &mainMenu;
 		}
 
-		if(testSDLKeyOnce(SDL_SCANCODE_UP))
+		if(testAnyInputOnce(AnyUp))
 		{
 			sfx.play(common, 26);
 			curMenu->movement(-1);
 		}
 
-		if(testSDLKeyOnce(SDL_SCANCODE_DOWN))
+		if(testAnyInputOnce(AnyDown))
 		{
 			sfx.play(common, 25);
 			curMenu->movement(1);
 		}
 
-		if(testSDLKeyOnce(SDL_SCANCODE_RETURN)
-		|| testSDLKeyOnce(SDL_SCANCODE_KP_ENTER))
+		if(testAnyInputOnce(AnyConfirm))
 		{
 			if(curMenu == &mainMenu)
 			{
@@ -2175,42 +2265,42 @@ int Gfx::menuLoop()
 			}
 		}
 
-		if(testSDLKeyOnce(SDL_SCANCODE_F1))
+		if(testAnyInputOnce(AnyFirst))
 		{
 			curMenu = &mainMenu;
 			mainMenu.moveToId(startItemId);
 			selected = startItemId;
 		}
-		if(testSDLKeyOnce(SDL_SCANCODE_F2))
+		if(testAnyInputOnce(AnySecond))
 		{
 			mainMenu.moveToId(MainMenu::MaAdvanced);
 			openHiddenMenu();
 		}
-		if(testSDLKeyOnce(SDL_SCANCODE_F3))
+		if(testAnyInputOnce(AnyThird))
 		{
 			curMenu = &mainMenu;
 			mainMenu.moveToId(MainMenu::MaReplays);
 			selected = curMenu->onEnter(common);
 		}
 
-		if (testSDLKeyOnce(SDL_SCANCODE_F5))
+		if (testAnyInputOnce(AnyFifth))
 		{
 			mainMenu.moveToId(MainMenu::MaPlayer1Settings);
 			playerSettings(0);
 		}
-		if (testSDLKeyOnce(SDL_SCANCODE_F6))
+		if (testAnyInputOnce(AnySixth))
 		{
 			mainMenu.moveToId(MainMenu::MaPlayer2Settings);
 			playerSettings(1);
 		}
-		if (testSDLKeyOnce(SDL_SCANCODE_F7))
+		if (testAnyInputOnce(AnySeventh))
 		{
 			mainMenu.moveToId(MainMenu::MaSettings);
 			curMenu = &settingsMenu; // Go into settings menu
 		}
 
 #if 1
-		if (testSDLKeyOnce(SDL_SCANCODE_F8))
+		if (testAnyInputOnce(AnyEigth))
 		{
 			uint32 s = 14;
 			
@@ -2331,25 +2421,25 @@ int Gfx::menuLoop()
 		}
 #endif
 
-		if(testSDLKey(SDL_SCANCODE_LEFT))
+		if(testAnyInput(AnyLeft))
 		{
 			if(!curMenu->onLeftRight(common, -1))
 				resetLeftRight();
 		}
-		if(testSDLKey(SDL_SCANCODE_RIGHT))
+		if(testAnyInput(AnyRight))
 		{
 			if(!curMenu->onLeftRight(common, 1))
 				resetLeftRight();
 		}
 
-		if(testSDLKeyOnce(SDL_SCANCODE_PAGEUP))
+		if(testAnyInputOnce(AnyPgUp))
 		{
 			sfx.play(common, 26);
 				
 			curMenu->movementPage(-1);
 		}
 
-		if(testSDLKeyOnce(SDL_SCANCODE_PAGEDOWN))
+		if(testAnyInputOnce(AnyPgDown))
 		{
 			sfx.play(common, 25);
 				

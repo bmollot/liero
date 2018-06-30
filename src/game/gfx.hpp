@@ -33,6 +33,44 @@ struct Key
 	char ch;
 };
 
+#define NUM_ANYINPUTS 33
+enum AnyInput
+{
+	AnyUnknown = 0,
+	AnyUp,
+	AnyDown,
+	AnyLeft,
+	AnyRight,
+	AnyPgUp,
+	AnyPgDown,
+	AnyConfirm,
+	AnyBack,
+	AnyReset,
+	AnyInverse,
+	AnyNumOne,
+	AnyNumTwo,
+	AnyNumThree,
+	AnyNumFour,
+	AnyNumFive,
+	AnyNumSix,
+	AnyNumSeven,
+	AnyNumEight,
+	AnyNumNine,
+	AnyNumZero,
+	AnyFirst,
+	AnySecond,
+	AnyThird,
+	AnyFourth,
+	AnyFifth,
+	AnySixth,
+	AnySeventh,
+	AnyEigth,
+	AnyNingth,
+	AnyTength,
+	AnyEleventh,
+	AnyTwelfth,
+};
+
 struct Game;
 struct Controller;
 struct Gfx;
@@ -183,6 +221,18 @@ struct Gfx
 			dosKeys[k] = false;
 	}
 
+	bool testAnyInput(AnyInput input)
+	{
+		return anyInputs[input];
+	}
+
+	bool testAnyInputOnce(AnyInput input)
+	{
+		bool ret = anyInputs[input];
+		anyInputs[input] = false;
+		return ret;
+	}
+
 	SDL_Keysym waitForKey();
 	uint32_t waitForKeyEx();
 	std::string getKeyName(uint32_t key);
@@ -257,6 +307,7 @@ struct Gfx
 	gvl::shared_ptr<Settings> settings;
 	
 	bool dosKeys[177];
+	bool anyInputs[NUM_ANYINPUTS];
 	// the window to render into
 	SDL_Window* sdlWindow = NULL;
 	// the window to render the spectator view into

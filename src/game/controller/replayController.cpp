@@ -69,7 +69,7 @@ bool ReplayController::process()
 {
 	if(state == StateGame || state == StateGameEnded)
 	{
-		if(gfx.testSDLKeyOnce(SDL_SCANCODE_R))
+		if(gfx.testAnyInputOnce(AnyReset))
 		{
 			*game = *initialGame;
 			game->postClone(*initialGame, true);

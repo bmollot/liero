@@ -12,35 +12,42 @@ CommonController::CommonController()
 
 bool CommonController::process()
 {
+	bool ret = true;
+
+	if(gfx.testAnyInputOnce(AnyBack))
+	{
+		ret = false;
+	}
+
 	int newFrameSkip = 0;
-	if(gfx.testSDLKeyOnce(SDL_SCANCODE_1))
+	if(gfx.testAnyInputOnce(AnyNumOne))
 		newFrameSkip = 1;
-	else if(gfx.testSDLKeyOnce(SDL_SCANCODE_2))
+	else if(gfx.testAnyInputOnce(AnyNumTwo))
 		newFrameSkip = 2;
-	else if(gfx.testSDLKeyOnce(SDL_SCANCODE_3))
+	else if(gfx.testAnyInputOnce(AnyNumThree))
 		newFrameSkip = 4;
-	else if(gfx.testSDLKeyOnce(SDL_SCANCODE_4))
+	else if(gfx.testAnyInputOnce(AnyNumFour))
 		newFrameSkip = 8;
-	else if(gfx.testSDLKeyOnce(SDL_SCANCODE_5))
+	else if(gfx.testAnyInputOnce(AnyNumFive))
 		newFrameSkip = 16;
-	else if(gfx.testSDLKeyOnce(SDL_SCANCODE_6))
+	else if(gfx.testAnyInputOnce(AnyNumSix))
 		newFrameSkip = 32;
-	else if(gfx.testSDLKeyOnce(SDL_SCANCODE_7))
+	else if(gfx.testAnyInputOnce(AnyNumSeven))
 		newFrameSkip = 64;
-	else if(gfx.testSDLKeyOnce(SDL_SCANCODE_8))
+	else if(gfx.testAnyInputOnce(AnyNumEight))
 		newFrameSkip = 128;
-	else if(gfx.testSDLKeyOnce(SDL_SCANCODE_9))
+	else if(gfx.testAnyInputOnce(AnyNumNine))
 		newFrameSkip = 256;
-	else if(gfx.testSDLKeyOnce(SDL_SCANCODE_0))
+	else if(gfx.testAnyInputOnce(AnyNumZero))
 		newFrameSkip = 512;
 
 	if(newFrameSkip)
 	{
-		inverseFrameSkip = (gfx.testSDLKey(SDL_SCANCODE_RCTRL) || gfx.testSDLKey(SDL_SCANCODE_LCTRL));
+		inverseFrameSkip = gfx.testAnyInput(AnyInverse);
 		frameSkip = newFrameSkip;
 	}
 
 	++cycles;
 
-	return true;
+	return ret;
 }

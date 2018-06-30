@@ -550,7 +550,7 @@ struct reader
 					#ifdef NO_EXCEPTIONS
 					printf("TOML ERROR: Found value, but it's not an object. name:\t");
 					for (size_t i = 0; i < name.size(); ++i)
-						printf("%s.", name[i]);
+						printf("%s.", name[i].c_str());
 					printf("\n");
 					abort();
 					#else

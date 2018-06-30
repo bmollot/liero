@@ -149,6 +149,8 @@ void LocalController::focus()
 
 bool LocalController::process()
 {
+	bool ret = true;
+
 	if(state == StateWeaponSelection)
 	{
 		if(ws->processFrame())
@@ -199,7 +201,9 @@ bool LocalController::process()
 		}
 	}
 	
-	//CommonController::process();
+	ret = CommonController::process();
+	if(!ret)
+		changeState(StateGameEnded);
 	
 	if(goingToMenu)
 	{
@@ -225,7 +229,7 @@ bool LocalController::process()
 		}
 	}
 	
-	return true;
+	return ret;
 }
 
 void LocalController::draw(Renderer& renderer, bool useSpectatorViewports)
