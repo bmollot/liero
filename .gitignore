@@ -42,11 +42,11 @@ liero-tool.nacp
 liero-tool.nro
 liero-tool.nso
 liero-tool.pfs0
-liero.elf
-liero.nacp
-liero.nro
-liero.nso
-liero.pfs0
+openliero.elf
+openliero.nacp
+openliero.nro
+openliero.nso
+openliero.pfs0
 TC/
 liero.cfg
 orbmit.cfg

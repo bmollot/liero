@@ -28,7 +28,7 @@
 
 void benchAll();
 
-int gameEntry(int argc, char* argv[])
+int gameEntry(int argc, char *argv[])
 #ifndef NO_EXCEPTIONS
 try
 #endif
@@ -126,7 +126,12 @@ try
 
 	FsNode configNode(gfx.getConfigNode());
 	// TC loading
+	#ifdef SWITCH
+	FsNode romfs = FsNode("romfs:/");
+	FsNode lieroRoot(romfs / "TC" / tcName);
+	#else
 	FsNode lieroRoot(configNode / "TC" / tcName);
+	#endif
 	gvl::shared_ptr<Common> common(new Common());
 	common->load(std::move(lieroRoot));
 	gfx.common = common;

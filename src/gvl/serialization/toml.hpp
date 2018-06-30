@@ -8,11 +8,6 @@
 #include <vector>
 #include <stdexcept>
 
-#if !defined(DEBUG) && !defined(DEBUG_FILE)
-#define U_AEM6DAF2FE546675DAS
-#define printf(...) 0
-#endif
-
 namespace gvl
 {
 
@@ -393,7 +388,6 @@ inline void resize(T(&arr)[N], std::size_t s)
 	{
 		#ifdef NO_EXCEPTIONS
 		printf("TOML ERROR: Tried to resize fixed-size array\n");
-		abort();
 		#else
 		throw parse_error();
 		#endif
@@ -461,7 +455,6 @@ struct reader
 						{
 							#ifdef NO_EXCEPTIONS
 							printf("TOML ERROR: Is this an empty array or something?\n");
-							abort();
 							#else
 							throw parse_error();
 							#endif
@@ -474,7 +467,6 @@ struct reader
 					{
 						#ifdef NO_EXCEPTIONS
 						printf("TOML ERROR: Didn't find an object after an array?\n");
-						abort();
 						#else
 						throw parse_error();
 						#endif
@@ -485,7 +477,6 @@ struct reader
 			{
 				#ifdef NO_EXCEPTIONS
 				printf("TOML ERROR: Specified path doesn't exist (%s)\n", e.c_str());
-				abort();
 				#else
 				throw parse_error();
 				#endif
@@ -552,7 +543,6 @@ struct reader
 					for (size_t i = 0; i < name.size(); ++i)
 						printf("%s.", name[i].c_str());
 					printf("\n");
-					abort();
 					#else
 					throw parse_error();
 					#endif
@@ -610,7 +600,6 @@ struct reader
 			{
 				#ifdef NO_EXCEPTIONS
 				printf("TOML ERROR: f(%s), cur's tt isn't t_object\n", name);
-				abort();
 				#else
 				throw parse_error();
 				#endif
@@ -642,7 +631,6 @@ struct reader
 		{
 			#ifdef NO_EXCEPTIONS
 			printf("TOML ERROR: v (%s) isn't an array\n", name);
-			abort();
 			#else
 			throw parse_error();
 			#endif
@@ -675,7 +663,6 @@ struct reader
 		{
 			#ifdef NO_EXCEPTIONS
 			printf("TOML ERROR: jv (%s) isn't an integer\n", name);
-			abort();
 			#else
 			throw parse_error();
 			#endif
@@ -691,7 +678,6 @@ struct reader
 		{
 			#ifdef NO_EXCEPTIONS
 			printf("TOML ERROR: jv (%s) isn't an unsigned integer\n", name);
-			abort();
 			#else
 			throw parse_error();
 			#endif
@@ -707,7 +693,6 @@ struct reader
 		{
 			#ifdef NO_EXCEPTIONS
 			printf("TOML ERROR: jv (%s) isn't a boolean\n", name);
-			abort();
 			#else
 			throw parse_error();
 			#endif
@@ -730,7 +715,6 @@ struct reader
 			{
 				#ifdef NO_EXCEPTIONS
 				printf("TOML ERROR: jv (%s) isn't a resolver\n", name);
-				abort();
 				#else
 				throw parse_error();
 				#endif
@@ -747,7 +731,6 @@ struct reader
 		{
 			#ifdef NO_EXCEPTIONS
 			printf("TOML ERROR: jv (%s) isn't a string\n", name);
-			abort();
 			#else
 			throw parse_error();
 			#endif
@@ -775,7 +758,6 @@ struct reader
 		{
 			#ifdef NO_EXCEPTIONS
 			printf("TOML ERROR: check failed (%c != %c)\n", c, e);
-			abort();
 			#else
 			throw parse_error();
 			#endif
@@ -831,7 +813,6 @@ struct reader
 				{
 					#ifdef NO_EXCEPTIONS
 					printf("TOML ERROR: Encountered invalid escape sequence in string (%s)\n", s.s.c_str());
-					abort();
 					#else
 					throw parse_error();
 					#endif
@@ -923,7 +904,7 @@ struct reader
 
 		#ifdef NO_EXCEPTIONS
 		printf("TOML ERROR: val() failed to find a valid token (at %c)\n", c);
-		abort();
+		return value();
 		#else
 		throw parse_error();
 		#endif
@@ -933,10 +914,5 @@ struct reader
 }
 
 }
-
-#ifdef U_AEM6DAF2FE546675DAS
-#undef U_AEM6DAF2FE546675DAS
-#undef printf
-#endif
 
 #endif // GVL_SERIALIZATION_TOML_HPP

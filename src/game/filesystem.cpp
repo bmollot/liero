@@ -709,6 +709,13 @@ FsNode::FsNode(std::string const& path)
 #else
 				if (part.empty())
 					imp.reset(new FsNodeFilesystem(part));
+				#ifdef SWITCH
+				else if (part == "romfs:")
+				{
+					printf("FSNODE INFO: Creating romfs node\n");
+					imp.reset(new FsNodeFilesystem(part));
+				}
+				#endif
 				else
 				{
 					imp.reset(new FsNodeFilesystem("."));

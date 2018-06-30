@@ -161,6 +161,7 @@ struct FsNode
 		auto s = imp->tryToSink();
 		if (!s) {
 			#ifdef NO_EXCEPTIONS
+			printf("TOSINK ERROR: Could not write %s\n", fullPath().c_str());
 			return s;
 			#else
 			throw std::runtime_error("Could not write " + fullPath());

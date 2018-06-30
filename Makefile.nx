@@ -32,7 +32,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 #     - <libnx folder>/default_icon.jpg
 #---------------------------------------------------------------------------------
 ifeq ($(strip $(TOOL)),)
-	TARGET		:=	liero
+	TARGET		:=	openliero
 else
 	TARGET		:= liero-tool
 endif
@@ -41,16 +41,20 @@ SOURCES		:=	src
 DATA		:=	data
 INCLUDES	:=	src
 EXEFS_SRC	:=	exefs_src
-ROMFS_SRC := pkg
+ROMFS := pkg
 
-APP_TITLE	:= liero 1.36
+APP_TITLE	:= OpenLiero
 APP_AUTHOR	:= OpenLiero Team
 APP_ICON		:= $(DEVKITPRO)/libnx/default_icon.jpg
+
+ifneq ($(ROMFS),)
+	export NROFLAGS += --romfsdir=$(TOPDIR)/$(ROMFS)
+endif
 
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
-DEFINES += -DSWITCH -D__AARCH64__ -DNO_EXCEPTIONS -DJOYPAD_CONTROLS # -DDEBUG_FILE=\"debug.txt\"
+DEFINES += -DSWITCH -D__AARCH64__ -DNO_EXCEPTIONS -DJOYPAD_CONTROLS # -DNXLINK # -DDEBUG_FILE=\"debug.txt\"
 
 ARCH	:=	-march=armv8-a -mtune=cortex-a57 -mtp=soft -fPIE
 
