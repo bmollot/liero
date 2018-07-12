@@ -45,7 +45,7 @@ ROMFS := pkg
 
 APP_TITLE	:= OpenLiero
 APP_AUTHOR	:= OpenLiero Team
-APP_ICON		:= $(DEVKITPRO)/libnx/default_icon.jpg
+ICON		:= app_icon.jpg
 
 ifneq ($(ROMFS),)
 	export NROFLAGS += --romfsdir=$(TOPDIR)/$(ROMFS)
@@ -66,7 +66,7 @@ CFLAGS	+= $(INCLUDE)	-I$(PORTLIBS)/include/SDL2
 CXXFLAGS	:= $(CFLAGS) -fno-exceptions -std=gnu++11
 
 ASFLAGS	:=	-g $(ARCH)
-LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
+LDFLAGS	:=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
 LIBS	:=  -lSDL2_image -lSDL2 -ljpeg -lpng16 -lz -lnx -lc -lm
 
