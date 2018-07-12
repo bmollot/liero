@@ -23,6 +23,14 @@ To build, run `make -f Makefile.nx all`.
 Disregard the CMake stuff, that's for building the PC release.  
 // TODO?: Redo build with CMake
 
+Screenshots
+===========
+
+Here are some screenshots from the DOS version of the game. It looks the same as the port.
+![liero1.gif](./screenshots/liero1.gif)
+![liero2.gif](./screenshots/liero2.gif)
+![liero3.gif](./screenshots/liero3.gif)
+
 OLD README
 ==========
 
